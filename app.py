@@ -3271,12 +3271,12 @@ if __name__ == "__main__":
 # 46. RESPONSIVE DESIGN UNTUK HP, TABLET, DAN LAPTOP
 # =========================================================
 
-st.markdown("""
+RESPONSIVE_CSS = r'''
 <style>
 
-/* =========================================
-   1. WARNA DASAR DAN TAMPILAN UTAMA
-========================================= */
+/* =====================================================
+   1. WARNA UTAMA APLIKASI
+===================================================== */
 
 :root {
     --warna-utama: #2457A7;
@@ -3286,6 +3286,7 @@ st.markdown("""
     --warna-teks: #1B2638;
     --warna-teks-kedua: #536176;
     --warna-garis: #DCE4F0;
+    --warna-hover: #E8F0FC;
 }
 
 .stApp {
@@ -3293,7 +3294,10 @@ st.markdown("""
     color: var(--warna-teks);
 }
 
-/* Area konten */
+/* =====================================================
+   2. AREA KONTEN
+===================================================== */
+
 .main .block-container {
     max-width: 1200px;
     padding-top: 1.5rem;
@@ -3302,16 +3306,15 @@ st.markdown("""
     padding-right: 2rem;
 }
 
-/* =========================================
-   2. TULISAN AGAR LEBIH JELAS
-========================================= */
+/* =====================================================
+   3. JUDUL DAN TULISAN
+===================================================== */
 
 .stApp p,
 .stApp li,
 .stApp label,
 .stApp .stMarkdown,
-.stApp .stText,
-.stApp [data-testid="stCaptionContainer"] {
+.stApp .stText {
     color: var(--warna-teks);
     line-height: 1.65;
 }
@@ -3320,29 +3323,31 @@ st.markdown("""
     color: var(--warna-gelap);
     font-size: 2rem;
     font-weight: 800;
+    line-height: 1.3;
 }
 
 .stApp h2 {
     color: var(--warna-gelap);
     font-size: 1.65rem;
     font-weight: 750;
+    line-height: 1.35;
 }
 
 .stApp h3 {
     color: var(--warna-utama);
     font-size: 1.3rem;
     font-weight: 700;
+    line-height: 1.4;
 }
 
-/* Teks kecil tetap terbaca */
 [data-testid="stCaptionContainer"] p {
-    font-size: 0.9rem;
     color: var(--warna-teks-kedua);
+    font-size: 0.9rem;
 }
 
-/* =========================================
-   3. KARTU DAN KOTAK INFORMASI
-========================================= */
+/* =====================================================
+   4. KARTU DAN INFORMASI
+===================================================== */
 
 [data-testid="stMetric"],
 [data-testid="stExpander"],
@@ -3352,7 +3357,7 @@ div[data-testid="stAlert"] {
 }
 
 [data-testid="stMetric"] {
-    background: var(--warna-kartu);
+    background-color: var(--warna-kartu);
     border: 1px solid var(--warna-garis);
     padding: 15px;
 }
@@ -3367,9 +3372,9 @@ div[data-testid="stAlert"] {
     font-weight: 800;
 }
 
-/* =========================================
-   4. TOMBOL
-========================================= */
+/* =====================================================
+   5. TOMBOL
+===================================================== */
 
 .stButton > button,
 .stDownloadButton > button,
@@ -3379,8 +3384,8 @@ div[data-testid="stAlert"] {
     border: 1px solid var(--warna-utama);
     border-radius: 10px;
     min-height: 44px;
-    font-weight: 700;
     padding: 0.55rem 1rem;
+    font-weight: 700;
     transition: 0.2s ease;
 }
 
@@ -3399,9 +3404,9 @@ div[data-testid="stAlert"] {
     color: #FFFFFF !important;
 }
 
-/* =========================================
-   5. INPUT DAN PILIHAN JAWABAN
-========================================= */
+/* =====================================================
+   6. KOLOM INPUT
+===================================================== */
 
 .stTextInput input,
 .stNumberInput input,
@@ -3428,9 +3433,9 @@ div[data-testid="stAlert"] {
     line-height: 1.5;
 }
 
-/* =========================================
-   6. TABEL DAN TAB
-========================================= */
+/* =====================================================
+   7. TABEL DAN TAB
+===================================================== */
 
 [data-testid="stDataFrame"] {
     border: 1px solid var(--warna-garis);
@@ -3448,9 +3453,9 @@ div[data-testid="stAlert"] {
     color: var(--warna-utama) !important;
 }
 
-/* =========================================
-   7. SIDEBAR
-========================================= */
+/* =====================================================
+   8. SIDEBAR
+===================================================== */
 
 [data-testid="stSidebar"] {
     background-color: #EAF0FA;
@@ -3462,9 +3467,9 @@ div[data-testid="stAlert"] {
     color: var(--warna-teks);
 }
 
-/* =========================================
-   8. TAMPILAN TABLET
-========================================= */
+/* =====================================================
+   9. TAMPILAN TABLET
+===================================================== */
 
 @media (max-width: 900px) {
 
@@ -3484,15 +3489,15 @@ div[data-testid="stAlert"] {
     .stApp h3 {
         font-size: 1.2rem;
     }
+
 }
 
-/* =========================================
-   9. TAMPILAN HP
-========================================= */
+/* =====================================================
+   10. TAMPILAN HP
+===================================================== */
 
 @media (max-width: 600px) {
 
-    /* Ruang konten HP */
     .main .block-container {
         padding-top: 1rem;
         padding-left: 0.85rem;
@@ -3501,6 +3506,7 @@ div[data-testid="stAlert"] {
     }
 
     /* Ukuran tulisan */
+
     .stApp {
         font-size: 16px;
     }
@@ -3528,7 +3534,8 @@ div[data-testid="stAlert"] {
         line-height: 1.4;
     }
 
-    /* Tombol lebih mudah disentuh */
+    /* Tombol lebih mudah ditekan */
+
     .stButton > button,
     .stDownloadButton > button,
     .stFormSubmitButton > button {
@@ -3538,7 +3545,8 @@ div[data-testid="stAlert"] {
         white-space: normal;
     }
 
-    /* Input tidak terlalu kecil */
+    /* Input lebih nyaman dibaca */
+
     .stTextInput input,
     .stNumberInput input,
     .stTextArea textarea {
@@ -3547,6 +3555,7 @@ div[data-testid="stAlert"] {
     }
 
     /* Pilihan jawaban */
+
     .stRadio label,
     .stCheckbox label {
         font-size: 15px !important;
@@ -3555,7 +3564,8 @@ div[data-testid="stAlert"] {
         padding-bottom: 4px;
     }
 
-    /* Kartu metrik */
+    /* Kartu informasi */
+
     [data-testid="stMetric"] {
         padding: 11px;
         margin-bottom: 8px;
@@ -3569,7 +3579,8 @@ div[data-testid="stAlert"] {
         font-size: 1.35rem;
     }
 
-    /* Tab bisa digeser */
+    /* Tab dapat digeser */
+
     .stTabs [data-baseweb="tab-list"] {
         gap: 5px;
         overflow-x: auto;
@@ -3582,33 +3593,38 @@ div[data-testid="stAlert"] {
         white-space: nowrap;
     }
 
-    /* Tabel tetap bisa digeser */
+    /* Tabel */
+
     [data-testid="stDataFrame"] {
         max-width: 100%;
         overflow-x: auto;
     }
 
-    /* Gambar menyesuaikan layar */
+    /* Gambar */
+
     [data-testid="stImage"] img {
         max-width: 100%;
         height: auto;
     }
 
-    /* Jarak antarbagian */
+    /* Jarak antarelemen */
+
     [data-testid="stVerticalBlock"] {
         gap: 0.75rem;
     }
 
-    /* Tulisan sidebar */
+    /* Sidebar */
+
     [data-testid="stSidebar"] p,
     [data-testid="stSidebar"] label {
         font-size: 15px;
     }
+
 }
 
-/* =========================================
-   10. MENCEGAH KONTEN MELEBAR KELUAR LAYAR
-========================================= */
+/* =====================================================
+   11. MENCEGAH KONTEN KELUAR DARI LAYAR
+===================================================== */
 
 .stApp,
 [data-testid="stAppViewContainer"],
@@ -3623,5 +3639,30 @@ code {
     overflow-wrap: anywhere;
 }
 
+/* =====================================================
+   12. WARNA TEKS DAN LATAR KOMPONEN
+===================================================== */
+
+[data-testid="stAlert"] {
+    color: var(--warna-teks);
+}
+
+[data-testid="stExpander"] {
+    background-color: #FFFFFF;
+    border: 1px solid var(--warna-garis);
+}
+
+[data-testid="stExpander"] summary {
+    color: var(--warna-gelap);
+    font-weight: 700;
+}
+
 </style>
-""", unsafe_allow_html=True)
+'''
+
+# Menampilkan desain responsive
+st.markdown(RESPONSIVE_CSS, unsafe_allow_html=True)
+
+# =========================================================
+# AKHIR BAGIAN 46
+# =========================================================
