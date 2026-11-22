@@ -3666,3 +3666,145 @@ st.markdown(RESPONSIVE_CSS, unsafe_allow_html=True)
 # =========================================================
 # AKHIR BAGIAN 46
 # =========================================================
+
+
+# =========================================================
+# 47. MEMBUAT AKUN GURU DARI SECRETS
+# =========================================================
+
+def buat_akun_guru_dari_secrets():
+
+    """
+    Membuat akun guru menggunakan username dan password
+    yang disimpan secara rahasia di secrets.toml.
+
+    Menggunakan struktur database lama:
+    username, password, role, created_at.
+    """
+
+    try:
+
+        # Mengambil konfigurasi rahasia
+        konfigurasi = st.secrets.get("guru", {})
+
+        username_guru = str(
+            konfigurasi.get("username", "")
+        ).strip()
+
+        password_guru = str(
+            konfigurasi.get("password", "")
+        )
+
+        # Memeriksa konfigurasi
+        if not username_guru or not password_guru:
+
+            st.warning(
+                "Akun guru belum dikonfigurasi. "
+                "Silakan isi bagian [guru] pada secrets.toml."
+            )
+
+            return False
+
+        # Validasi username
+        if len(username_guru) < 3:
+
+            st.error(
+                "Username guru minimal 3 karakter."
+            )
+
+            return False
+
+        # Validasi password
+        if len(password_guru) < 10:
+
+            st.error(
+                "Password guru minimal 10 karakter."
+            )
+
+            return False
+
+        conn = koneksi_database()
+        cursor = conn.cursor()
+
+        # Memeriksa apakah username sudah tersedia
+        cursor.execute("""
+            SELECT username, role
+            FROM users
+            WHERE username = ?
+        """, (username_guru,))
+
+        pengguna = cursor.fetchone()
+
+        # Jika akun sudah ada
+        if pengguna is not None:
+
+            if pengguna["role"] == "Guru":
+
+                conn.close()
+                return False
+
+            else:
+
+                st.error(
+                    "Username tersebut sudah digunakan "
+                    "oleh akun siswa. Silakan gunakan "
+                    "username guru yang berbeda."
+                )
+
+                conn.close()
+                return False
+
+        # Membuat hash password dengan sistem lama
+        password_terenkripsi = hash_password(
+            password_guru
+        )
+
+        # Menyimpan akun guru
+        cursor.execute("""
+            INSERT INTO users (
+                username,
+                password,
+                role,
+                created_at
+            )
+            VALUES (?, ?, ?, ?)
+        """, (
+            username_guru,
+            password_terenkripsi,
+            "Guru",
+            datetime.now().strftime(
+                "%Y-%m-%d %H:%M:%S"
+            )
+        ))
+
+        conn.commit()
+        conn.close()
+
+        return True
+
+    except Exception as e:
+
+        st.error(
+            f"Gagal membuat akun guru: {e}"
+        )
+
+        return False
+
+
+# =========================================================
+# 48. INISIALISASI AKUN GURU
+# =========================================================
+
+akun_guru_baru = buat_akun_guru_dari_secrets()
+
+# Jika akun berhasil dibuat, muat ulang aplikasi
+# agar akun langsung tersedia pada halaman login.
+
+if akun_guru_baru:
+
+    st.rerun()
+
+
+# =========================================================
+# AKHIR BAGIAN 47 DAN 48
+# =========================================================
