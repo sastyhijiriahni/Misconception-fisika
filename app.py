@@ -3246,10 +3246,107 @@ def tampilkan_halaman():
 
 
 # =========================================================
+# 43A. MEMBUAT AKUN GURU DARI STREAMLIT SECRETS
+# =========================================================
+
+def buat_akun_guru_dari_secrets():
+
+    try:
+
+        # Memeriksa konfigurasi guru
+        if "guru" not in st.secrets:
+            return
+
+        konfigurasi = st.secrets["guru"]
+
+        username_guru = str(
+            konfigurasi.get("username", "")
+        ).strip()
+
+        password_guru = str(
+            konfigurasi.get("password", "")
+        )
+
+        if not username_guru or not password_guru:
+            st.error("Username dan password guru belum diisi.")
+            return
+
+        if len(username_guru) < 3:
+            st.error("Username guru minimal 3 karakter.")
+            return
+
+        if len(password_guru) < 10:
+            st.error("Password guru minimal 10 karakter.")
+            return
+
+        conn = koneksi_database()
+        cursor = conn.cursor()
+
+        # Memeriksa username yang sudah ada
+        cursor.execute("""
+            SELECT username, role
+            FROM users
+            WHERE username = ?
+        """, (username_guru,))
+
+        pengguna = cursor.fetchone()
+
+        if pengguna:
+
+            if pengguna["role"] == "Guru":
+                conn.close()
+                return
+
+            st.error(
+                "Username guru sudah digunakan oleh akun siswa. "
+                "Gunakan username lain."
+            )
+
+            conn.close()
+            return
+
+        # Mengenkripsi password menggunakan fungsi aplikasi
+        password_hash = hash_password(password_guru)
+
+        # Menyimpan akun guru ke database lama
+        cursor.execute("""
+            INSERT INTO users (
+                username,
+                password,
+                role,
+                created_at
+            )
+            VALUES (?, ?, ?, ?)
+        """, (
+            username_guru,
+            password_hash,
+            "Guru",
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        ))
+
+        conn.commit()
+        conn.close()
+
+        return True
+
+    except Exception as e:
+
+        st.error(f"Gagal membuat akun guru: {e}")
+        return False
+
+# =========================================================
+# AKHIR BAGIAN 43A
+# =========================================================
+
+
+# =========================================================
 # 44. FUNGSI UTAMA APLIKASI
 # =========================================================
 
 def main():
+
+    # Membuat akun guru jika belum tersedia
+    buat_akun_guru_dari_secrets()
 
     # Sidebar navigasi
     halaman_sidebar()
@@ -3265,7 +3362,6 @@ def main():
 if __name__ == "__main__":
 
     main()
-
 
 # =========================================================
 # 46. RESPONSIVE DESIGN UNTUK HP, TABLET, DAN LAPTOP
